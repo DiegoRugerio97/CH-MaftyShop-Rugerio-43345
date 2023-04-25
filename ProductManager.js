@@ -5,7 +5,7 @@ class ProductManager {
     
     addProduct(title, description, price, thumbnail, code, stock){
       if(arguments.length !== 6){
-        console.log("ERROR: All fields are needed.")
+        console.log("ERROR: Necessary fields: title, description, price, thumbnail, code, stock")
         return
       }
 
