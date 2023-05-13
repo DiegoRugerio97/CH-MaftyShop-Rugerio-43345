@@ -1,4 +1,5 @@
 
+import fs from 'fs'
 class ProductManager {
   /**
  * Creates a ProductManager instance, stores an array of products and a path to where the file will be read from/ written to.
@@ -213,8 +214,6 @@ const printPromise = (promise) => {
     .catch(e => console.log(e))
 }
 
-const fs = require('fs')
-
 // ProductManager instance
 // const PM = new ProductManager('./src/JSON/products.json')
 
@@ -237,3 +236,5 @@ const fs = require('fs')
 // }
 // PM.updateProduct(9, obj)
 // printPromise(PM.getProductById(7))
+
+export default ProductManager
