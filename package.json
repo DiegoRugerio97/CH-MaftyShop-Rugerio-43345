@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "type":"module",
   "version": "1.0.0",
   "description": "Repositorio para entrega de desafíos y practica del curso de Backend, comisión 43345 de CoderHouse.",
   "main": "ProductManager.js",
@@ -7,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type": "module",
+    "type": "git",
     "url": "git+https://github.com/DiegoRugerio97/CH-MaftyShop-Rugerio-43345.git"
   },
   "keywords": [],
