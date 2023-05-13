@@ -202,7 +202,7 @@ class ProductManager {
     return fs.promises.readFile(this.path, 'utf-8')
       .then(data => { return JSON.parse(data) })
       .then(parsedData => this.products = parsedData)
-      .catch(e => { return Promise.reject(`ERROR: File couldn't be read`) })
+      .catch(e => {return Promise.reject(`ERROR: File couldn't be read ${e}`) })
   }
 }
 
@@ -216,12 +216,12 @@ const printPromise = (promise) => {
 const fs = require('fs')
 
 // ProductManager instance
-const PM = new ProductManager('./products.json')
+// const PM = new ProductManager('./src/JSON/products.json')
 
 // PLAYGROUND
 // New product, change code to add
 // Same code to test code error
-// PM.addProduct("producto prueba", "Este es un producto prueba", 200, "Sin imagen", "Code9", 25)
+// PM.addProduct("producto prueba 100", "Este es un producto prueba", 200, "Sin imagen", "Code100", 25)
 
 // Print products
 // printPromise(PM.getProducts())
@@ -230,10 +230,10 @@ const PM = new ProductManager('./products.json')
 // PM.deleteProduct(100)
 
 // Update
-obj = {
-  "title": "Producto actualizado",
-  "description": "Descripcion actualizada Stock 1000",
-  "stock" : 1000
-}
+// obj = {
+//   "title": "Producto actualizado",
+//   "description": "Descripcion actualizada Stock 1000",
+//   "stock" : 1000
+// }
 // PM.updateProduct(9, obj)
 // printPromise(PM.getProductById(7))
