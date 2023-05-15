@@ -4,6 +4,8 @@ import ProductManager from './ProductManager.js'
 const app = express()
 const pm = new ProductManager("./src/JSON/products.json")
 
+app.use(express.urlencoded({extended:true}))
+
 // Documentation (?)
 app.get("/", async (req, res) => {
     let message = `/products - Return complete array of products
@@ -22,7 +24,7 @@ app.get("/products", async (req, res) => {
     catch (error) {
         return res.send({ "error": error })
     }
-    if (!req.query.limit) {
+    if (!req.query.limit || isNaN(req.query.limit)) {
         return res.send({ "products": productsArray })
     }
     let limit = req.query.limit
