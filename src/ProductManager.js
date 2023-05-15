@@ -52,7 +52,7 @@ class ProductManager {
     * @throws {Promise<Token>} In case ID doesn't exists, rejects the promise.
     */
     return this.#readProductsFromFile()
-      .then(() => { return this.products.find(product => product.id === id) ?? Promise.reject("ERROR: Product not found.") })
+      .then(() => { return this.products.find(product => product.id === id) ?? Promise.reject("Product not found.") })
   }
 
   getProducts() {
@@ -83,7 +83,7 @@ class ProductManager {
     * @throws {Promise<Token>} In case ID doesn't exists, rejects the promise.
     */
     this.#readProductsFromFile()
-      .then(() => this.products.find(product => product.id === id) ?? Promise.reject("ERROR: Product not found."))
+      .then(() => this.products.find(product => product.id === id) ?? Promise.reject("Product not found."))
       .then(() => { return this.products.filter(product => product.id != id) })
       .then(filteredProducts => this.products = filteredProducts)
       .then(() => this.#writeProductsToFile())
@@ -108,7 +108,7 @@ class ProductManager {
       .then(() => {
         let productIndex = this.products.findIndex(product => product.id === id)
         if (productIndex === -1) {
-          return Promise.reject("ERROR: Product not found.")
+          return Promise.reject("Product not found.")
         }
         return productIndex
       })
@@ -150,7 +150,7 @@ class ProductManager {
     */
 
     if (this.#codeExists(code)) {
-      return Promise.reject("ERROR: Code already exists.")
+      return Promise.reject("Code already exists.")
     }
 
     let id = 1
@@ -186,7 +186,7 @@ class ProductManager {
     */
     return fs.promises.writeFile(this.path, JSON.stringify(this.products), 'utf-8')
       .then(() => console.log(`INFO: File was written with ${this.products.length} items.`))
-      .catch((e) => { return Promise.reject(`ERROR: File couldn't be saved`) })
+      .catch((e) => { return Promise.reject(`File couldn't be saved`) })
   }
 
   #readProductsFromFile() {
@@ -203,7 +203,7 @@ class ProductManager {
     return fs.promises.readFile(this.path, 'utf-8')
       .then(data => { return JSON.parse(data) })
       .then(parsedData => this.products = parsedData)
-      .catch(e => {return Promise.reject(`ERROR: File couldn't be read ${e}`) })
+      .catch(e => {return Promise.reject(`File couldn't be read ${e}`) })
   }
 }
 
