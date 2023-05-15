@@ -1,1 +1,92 @@
-[{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code2","stock":25,"id":1},{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code1","stock":25,"id":2},{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code3","stock":25,"id":3},{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code4","stock":25,"id":4},{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code5","stock":25,"id":5},{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code6","stock":25,"id":6},{"title":"Producto actualizado","description":"Descripcion actualizada","thumbnail":"Sin imagen","price":200,"code":"Code10","stock":25,"id":7},{"title":"producto prueba","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code11","stock":25,"id":8},{"title":"Producto actualizado","description":"Descripcion actualizada Stock 1000","thumbnail":"Sin imagen","price":200,"code":"Code9","stock":1000,"id":9},{"title":"producto prueba 100","description":"Este es un producto prueba","thumbnail":"Sin imagen","price":200,"code":"Code100","stock":25,"id":10}]
+[
+  {
+    "title": "POP UP PARADE EDELGARD VON HRESVELG",
+    "description": "This is a completed and painted, fixed-pose figure.",
+    "thumbnail": "Sin imagen",
+    "price": 750,
+    "code": "POPUP01",
+    "stock": 10,
+    "id": 1
+  },
+  {
+    "title": "POP UP PARADE KAMINA",
+    "description": "This is a completed and painted, fixed-pose figure.",
+    "thumbnail": "Sin imagen",
+    "price": 750,
+    "code": "POPUP02",
+    "stock": 10,
+    "id": 2
+  },
+  {
+    "title": "POP UP PARADE QUEEN",
+    "description": "This is a completed and painted, fixed-pose figure.",
+    "thumbnail": "Sin imagen",
+    "price": 750,
+    "code": "POPUP03",
+    "stock": 10,
+    "id": 3
+  },
+  {
+    "title": "RG GNT-0000 00 QAN[T]",
+    "description": "This is a posable, Real-Grade injection-plastic kit of an item from the Gundam universe.",
+    "thumbnail": "Sin imagen",
+    "price": 1000,
+    "code": "GUNPLA01",
+    "stock": 10,
+    "id": 4
+  },
+  {
+    "title": "RG HI-NU GUNDAM",
+    "description": "This is a posable, Real-Grade injection-plastic kit of an item from the Gundam universe.",
+    "thumbnail": "Sin imagen",
+    "price": 1000,
+    "code": "GUNPLA02",
+    "stock": 10,
+    "id": 5
+  },
+  {
+    "title": "RG FULL ARMOR UNICORN GUNDAM",
+    "description": "This is a posable, Real-Grade injection-plastic kit of an item from the Gundam universe.",
+    "thumbnail": "Sin imagen",
+    "price": 1000,
+    "code": "GUNPLA03",
+    "stock": 10,
+    "id": 6
+  },
+  {
+    "title": "RG RX-78-2 GUNDAM",
+    "description": "This is a posable, Real-Grade injection-plastic kit of an item from the Gundam universe.",
+    "thumbnail": "Sin imagen",
+    "price": 1000,
+    "code": "GUNPLA04",
+    "stock": 10,
+    "id": 7
+  },
+  {
+    "title": "RG ZETA GUNDAM",
+    "description": "This is a posable, Real-Grade injection-plastic kit of an item from the Gundam universe.",
+    "thumbnail": "Sin imagen",
+    "price": 1000,
+    "code": "GUNPLA05",
+    "stock": 10,
+    "id": 8
+  },
+  {
+    "title": "RG RX-0 UNICORN GUNDAM",
+    "description": "This is a posable, Real-Grade injection-plastic kit of an item from the Gundam universe.",
+    "thumbnail": "Sin imagen",
+    "price": 1000,
+    "code": "GUNPLA06",
+    "stock": 10,
+    "id": 9
+  },
+  {
+    "title": "KAGUYA-SAMA: LOVE IS WAR #19",
+    "description": "This is a Japanese (or English) language manga (comic) or a magazine featuring multiple manga series.",
+    "thumbnail": "Sin imagen",
+    "price": 200,
+    "code": "MANGA01",
+    "stock": 20,
+    "id": 10
+  }
+]
