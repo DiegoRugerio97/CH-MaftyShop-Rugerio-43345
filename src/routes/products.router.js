@@ -94,6 +94,19 @@ router.put("/:id", async (req, res) => {
     }
 })
 
+router.delete("/:id", async (req, res) => {
+    
+    try {
+        const id = parseInt(req.params.id)
+        const pmResponse = await pm.deleteProduct(id)
+        return res.status(200).send({"info" :pmResponse})
+    }
+    catch (error) {
+        return res.status(400).send({ "error": error })
+    }
+})
+
+
 export default router;
 
 // PROMISES

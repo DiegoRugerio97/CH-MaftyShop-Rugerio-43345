@@ -82,13 +82,13 @@ class ProductManager {
     * @returns {void} Method doesn't return anything.
     * @throws {Promise<Token>} In case ID doesn't exists, rejects the promise.
     */
-    this.#readProductsFromFile()
+    return this.#readProductsFromFile()
       .then(() => this.products.find(product => product.id === id) ?? Promise.reject("Product not found."))
       .then(() => { return this.products.filter(product => product.id != id) })
       .then(filteredProducts => this.products = filteredProducts)
       .then(() => this.#writeProductsToFile())
-      .then(() => console.log(`INFO: Product with ID: ${id} deleted`))
-      .catch(e => console.log(e))
+      .then(() => {return Promise.resolve(`Product with id ${id} deleted`)})
+      .catch(e => {return Promise.reject(e)})
   }
 
   updateProduct(id, obj) {
