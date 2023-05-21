@@ -12,7 +12,7 @@ class ProductManager {
   }
 
   // Main methods
-  addProduct(title, description, price, thumbnail, code, stock) {
+  addProduct(title, description, code, price, status, stock, category, thumbnails) {
     /**
     * This method does reads from the file, adds the product to the array, and writes the file again to the specified file.
     *
@@ -22,21 +22,21 @@ class ProductManager {
     * @async
     * @param {string} title Title of the product.
     * @param {string} description Description of the product.
-    * @param {number} price Price of the product in MXN.
-    * @param {string} thumbnail URL for the image of product.
     * @param {string} code Code of the product.
+    * @param {number} price Price of the product in MXN.
+    * @param {Boolean} status Status.
     * @param {number} stock Current stock for the product.
+    * @param {string} category Category of the product.
+    * @param {Array} thumbnails Array with strings, URLs for the images of product.
     * @returns {void} Method doesn't return anything.
     * @throws {Promise<Token>} In case number of arguments is incorrect, rejects the promise.
     */
-    if (arguments.length !== 6) {
-      return Promise.reject("ERROR: Necessary fields: title, description, price, thumbnail, code, stock")
-    }
+    
 
-    this.#readProductsFromFile()
-      .then(() => this.#registerProduct(title, description, price, thumbnail, code, stock))
+    return this.#readProductsFromFile()
+      .then(() => this.#registerProduct(title, description, code, price, status, stock, category, thumbnails))
       .then(() => this.#writeProductsToFile())
-      .catch(e => console.log(e))
+      .catch(e => {return Promise.reject(e)})
   }
 
   getProductById(id) {
@@ -67,7 +67,7 @@ class ProductManager {
     * @throws {Promise<Token>} In case number of arguments is incorrect, rejects the promise.
     */
     return this.#readProductsFromFile().
-      then(() => { return this.products ?? Promise.reject("ERROR: Could not load products.") })
+      then(() => { return this.products ?? Promise.reject("Could not load products.") })
   }
 
   deleteProduct(id) {
@@ -104,7 +104,7 @@ class ProductManager {
     * @returns {void} Method doesn't return anything.
     * @throws {Promise<Token>} In case the ID doesn't exist, rejects the promise.
     */
-    this.#readProductsFromFile()
+    return this.#readProductsFromFile()
       .then(() => {
         let productIndex = this.products.findIndex(product => product.id === id)
         if (productIndex === -1) {
@@ -114,7 +114,8 @@ class ProductManager {
       })
       .then((productIndex) => this.products[productIndex] = { ...this.products[productIndex], ...obj })
       .then(() => this.#writeProductsToFile())
-      .catch(e => console.log(e))
+      .then(() => {return Promise.resolve(`Item with id ${id} updated succesfully`)})
+      .catch(e => {return Promise.reject(e)})
   }
   // Utility methods
   #codeExists(code) {
@@ -131,7 +132,7 @@ class ProductManager {
     return productCodes.includes(code)
   }
 
-  #registerProduct(title, description, price, thumbnail, code, stock) {
+  #registerProduct(title, description, code, price, status, stock, category, thumbnails ) {
     /**
     * This method verifies if code exists, if not pushes the object to the array.
     * Assigns automatically incremental ID.
@@ -141,11 +142,12 @@ class ProductManager {
     * @instance
     * @param {string} title Title of the product.
     * @param {string} description Description of the product.
-    * @param {number} price Price of the product in MXN.
-    * @param {string} thumbnail URL for the image of product.
     * @param {string} code Code of the product.
+    * @param {number} price Price of the product in MXN.
+    * @param {Boolean} status Status.
     * @param {number} stock Current stock for the product.
-    * @returns {void} Method doesn't return anything.
+    * @param {string} category Category of the product.
+    * @param {Array} thumbnails Array with strings, URLs for the images of product.
     * @throws {Promise<Token>} If code already exists, rejects the promise.
     */
 
@@ -161,14 +163,15 @@ class ProductManager {
     }
 
     this.products.push({
+      id: id,
       title: title,
       description: description,
-      thumbnail: thumbnail,
-      price: price,
-      thumbnail: thumbnail,
       code: code,
+      price: price,
+      status : status, 
       stock: stock,
-      id: id
+      category: category,
+      thumbnails: thumbnails,
     })
   }
 
@@ -185,7 +188,7 @@ class ProductManager {
     * @throws {Promise<Token>} If something fails, promise is rejected.
     */
     return fs.promises.writeFile(this.path, JSON.stringify(this.products), 'utf-8')
-      .then(() => console.log(`INFO: File was written with ${this.products.length} items.`))
+      .then(() => {return Promise.resolve(`File was written with ${this.products.length} items.`)})
       .catch((e) => { return Promise.reject(`File couldn't be saved`) })
   }
 
