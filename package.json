@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "type":"module",
+  "type": "module",
   "version": "1.0.0",
   "description": "Repositorio para entrega de desafíos y practica del curso de Backend, comisión 43345 de CoderHouse.",
   "main": "ProductManager.js",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/DiegoRugerio97/CH-MaftyShop-Rugerio-43345#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "uid": "^2.0.2"
   }
 }
