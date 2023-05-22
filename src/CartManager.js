@@ -38,7 +38,7 @@ class CartManager {
 
     addProductToCart(cartId, productId, productQuantity) {
         /**
-        * This method reads from the file, adds the product and writes the array to the file.
+        * This method reads from the file, adds the product to the specified cart and writes the array to the file
         *
         * @returns {Promise<Token>} Method returns chain of promises
         * @throws {Promise<Token>} In case cart id doesn't exist rejects the promise
@@ -70,6 +70,55 @@ class CartManager {
             .catch(e => { return Promise.reject(e) })
     }
 
+    deleteCart(id) {
+        /**
+        * This method reads from the file, deletes the specified cart if it exists.
+        *
+        * @returns {Promise<Token>} Method returns chain of promises, which deletes the cart
+        * @throws {Promise<Token>} In case id doesn't exists, rejects the promise.
+        */
+        return this.#readCartsFromFile()
+            .then(() => this.carts.find(cart => cart.id === id) ?? Promise.reject("Cart not found."))
+            .then(() => { return this.carts.filter(cart => cart.id != id) })
+            .then(filteredCarts => this.carts = filteredCarts)
+            .then(() => this.#writeCartsToFile())
+            .then(() => { return Promise.resolve(`Cart with id ${id} deleted`) })
+            .catch(e => { return Promise.reject(e) })
+    }
+
+    deleteProductFromCart(cartId, productId) {
+        /**
+        * This method reads from the file, adds the product and writes the array to the file.
+        *
+        * @returns {Promise<Token>} Method returns chain of promises
+        * @throws {Promise<Token>} In case cart id or product id doesn't exist in cart rejects the promise
+        */
+        return this.#readCartsFromFile()
+            .then(() => {
+                let cartIndex = this.carts.findIndex(cart => cart.id === cartId)
+                if (cartIndex === -1) {
+                    return Promise.reject("Cart not found.")
+                }
+                return cartIndex
+            })
+            .then((cartIndex) => { return this.carts[cartIndex].products })
+            .then((cartProducts) => {
+                let productIndex = cartProducts.findIndex(p => p.product === productId)
+                if (productIndex == -1) {
+                    return Promise.reject(`Product ${productId} in cart not found.`)
+                }
+                else {
+                    return cartProducts.filter(p => p.product !== productId)
+                }
+            })
+            .then((filteredProducts) => {
+                let cartIndex = this.carts.findIndex(cart => cart.id === cartId)
+                return this.carts[cartIndex].products = filteredProducts
+            })
+            .then(() => this.#writeCartsToFile())
+            .then(() => { return Promise.resolve(`Cart with id ${cartId}, succesful deletion of product ${productId}`) })
+            .catch(e => { return Promise.reject(e) })
+    }
     // Utility methods
     #registerCart() {
         /**

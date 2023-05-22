@@ -21,7 +21,6 @@ router.post("/", async (req, res) => {
     }
 })
 
-
 router.get("/:id", async (req, res) => {
     /**
     * GET /api/carts/id
@@ -39,10 +38,9 @@ router.get("/:id", async (req, res) => {
     }
 })
 
-// /carts - Add new product to the products array from specified cart by id
 router.post("/:cid/products/:pid", async (req, res) => {
     /**
-    * GET /api/carts/id
+    * POST /api/carts/cid/products/pid
     * @summary Takes cid and pid params and adds specified product to the specified cart
     * @return {object} 200 - success response - info object with cid, pid message
     * @throws {object} 400 - failed response - error object with message
@@ -62,6 +60,41 @@ router.post("/:cid/products/:pid", async (req, res) => {
     }
 })
 
+router.delete("/:id", async (req, res) => {
+    /**
+    * DELETE /api/carts/id
+    * @summary Takes id and deletes the specified cart if it exists
+    * @return {object} 200 - success response - info object id of deleted cart
+    * @throws {object} 400 - failed response - error object with message
+    */
 
+    try {
+        const id = req.params.id
+        const cmResponse = await cm.deleteCart(id)
+        return res.status(200).send({ "info": cmResponse })
+    }
+    catch (error) {
+        return res.status(400).send({ "error": error })
+    }
+})
+
+router.delete("/:cid/products/:pid", async (req, res) => {
+    /**
+    * DELETE /api/carts/cid/products/pid
+    * @summary Takes cid and pid params deletes product from specified cart
+    * @return {object} 200 - success response - info object pid message
+    * @throws {object} 400 - failed response - error object with message
+    */
+
+    try {
+        const cid = req.params.cid
+        const pid = req.params.pid
+        const cmResponse = await cm.deleteProductFromCart(cid, pid)
+        return res.status(200).send({ "info": cmResponse })
+    }
+    catch (error) {
+        return res.status(400).send({ "error": error })
+    }
+})
 
 export default router;
