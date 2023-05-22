@@ -7,19 +7,8 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-app.use('/products', productRouter)
-app.use('/carts', cartRouter)
-
-
-// Documentation (?)
-app.get("/", async (req, res) => {
-    let message = `/products - Return complete array of products
-    /products?limit=X - Return X elements of products
-    /products/<ID> - Return the product with specified ID`
-    res.send(message)
-})
-
-
+app.use('/api/products', productRouter)
+app.use('/api/carts', cartRouter)
 
 const PORT = 8080
 app.listen(PORT, () => console.log("Servidor en puerto 8080"))

@@ -5,9 +5,13 @@ const pm = new ProductManager("./src/JSON/products.json")
 
 const router = Router()
 
-// /products - Entire array
-// /products?limit=X - X elements
 router.get("/", async (req, res) => {
+    /**
+    * GET /api/products/<?limit=X>
+    * @summary Takes limit query paramsand returns sliced products array or full array if no limit is established
+    * @return {object} 200 - success response - products object with products array
+    * @throws {object} 400 - failed response - error object with message
+    */
     let productsArray = []
     try {
         productsArray = await pm.getProducts()
@@ -23,10 +27,15 @@ router.get("/", async (req, res) => {
     return res.status(200).send({ "products": slicedArray })
 })
 
-// /products/<pID> - Single object product of specified ID
 router.get("/:id", async (req, res) => {
+    /**
+    * GET /api/products/id
+    * @summary Takes id param and product object
+    * @return {object} 200 - success response - product object
+    * @throws {object} 400 - failed response - error object with message
+    */
     try {
-        const id = parseInt(req.params.id)
+        const id = req.params.id
         const product = await pm.getProductById(id)
         return res.status(200).send(product)
     }
@@ -36,6 +45,12 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
+    /**
+    * POST /api/products/
+    * @summary Takes product object in body, validates fields and types, writes in products array and file
+    * @return {object} 200 - success response - info object with file size message
+    * @throws {object} 400 - failed response - error object with message
+    */
     let fieldsCondition = req.body.title && req.body.description && req.body.code && req.body.price && req.body.status && req.body.stock && req.body.category
     if (!fieldsCondition) {
         return res.status(400).send({ error: "Incomplete fields: title, description, code, price, status, stock, category" })
@@ -60,7 +75,12 @@ router.post("/", async (req, res) => {
 })
 
 router.put("/:id", async (req, res) => {
-
+    /**
+    * PUT /api/products/id
+    * @summary Takes product object in body to update, validates fields and types, updates specified product
+    * @return {object} 200 - success response - info object with id of updated product
+    * @throws {object} 400 - failed response - error object with message
+    */
     const prototypeObject = {
         title: "string",
         description: "string",
@@ -74,7 +94,7 @@ router.put("/:id", async (req, res) => {
 
     for (let key of Object.keys(req.body)) {
         if (!(key in prototypeObject)) {
-            return res.status(400).send({ error: `Can't update unknown parameter ${key}`})
+            return res.status(400).send({ error: `Can't update unknown parameter ${key}` })
         }
     }
 
@@ -85,9 +105,9 @@ router.put("/:id", async (req, res) => {
     })
 
     try {
-        const id = parseInt(req.params.id)
+        const id = req.params.id
         const pmResponse = await pm.updateProduct(id, req.body)
-        return res.status(200).send({"info" :pmResponse})
+        return res.status(200).send({ "info": pmResponse })
     }
     catch (error) {
         return res.status(400).send({ "error": error })
@@ -95,11 +115,16 @@ router.put("/:id", async (req, res) => {
 })
 
 router.delete("/:id", async (req, res) => {
-    
+    /**
+    * DELETE /api/products/id
+    * @summary Deletes product specified by id param
+    * @return {object} 200 - success response - info object with id of deleted product
+    * @throws {object} 400 - failed response - error object with message
+    */
     try {
-        const id = parseInt(req.params.id)
+        const id = req.params.id
         const pmResponse = await pm.deleteProduct(id)
-        return res.status(200).send({"info" :pmResponse})
+        return res.status(200).send({ "info": pmResponse })
     }
     catch (error) {
         return res.status(400).send({ "error": error })
@@ -108,25 +133,3 @@ router.delete("/:id", async (req, res) => {
 
 
 export default router;
-
-// PROMISES
-// app.get("/productsP", (req, res) => {
-//     if (!req.query.limit) {
-//         pm.getProducts()
-//             .then((productsArray) => res.send({ "products": productsArray }))
-//             .catch(error => res.send({ "error": error }))
-//     }
-//     else {
-//         let limit = req.query.limit
-//         pm.getProducts()
-//             .then((productsArray) => res.send({ "products": productsArray.slice(0, limit) }))
-//             .catch(error => res.send({ "error": error }))
-//     }
-// })
-
-// app.get("/productsP/:pId", (req, res) => {
-//     const id = parseInt(req.params.pId)
-//     pm.getProductById(id)
-//         .then((product) => res.send(product))
-//         .catch(error => res.send({ "error": error }))
-// })
