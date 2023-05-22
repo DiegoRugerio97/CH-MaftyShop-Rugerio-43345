@@ -63,7 +63,7 @@ class ProductManager {
 
   updateProduct(id, obj) {
     /**
-    * This method does reads from the file, retrieves the product to update and writes the array to the file.
+    * This method reads from the file, retrieves the product to update and writes the array to the file.
     *
     * @returns {Promise<Token>} Method returns chain of promises, which updates product
     * @throws {Promise<Token>} In case the ID doesn't exist, rejects the promise
@@ -146,6 +146,23 @@ class ProductManager {
       .then(parsedData => this.products = parsedData)
       .catch(e => { return Promise.reject(`File couldn't be read ${e}`) })
   }
+
+  isProductValid(id) {
+    /**
+    * This method reads from the file, validates if id to insert to cart is valid
+    * @returns {Promise<Token>} Method returns chain of promises, which returns boolean
+    * @throws {Promise<Token>} In case the ID doesn't exist, rejects the promise
+    */
+    return this.#readProductsFromFile()
+      .then(() => {
+        let productIsValid = this.products.find(p => p.id === id)
+        if (!productIsValid) {
+          return Promise.reject(`Product ${id} not valid, cannot add to cart`)
+        }
+      })
+      .catch(e => { return Promise.reject(e) })
+  }
+
 }
 
 export default ProductManager

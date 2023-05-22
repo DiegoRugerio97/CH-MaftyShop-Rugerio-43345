@@ -1,7 +1,9 @@
 import { Router } from 'express'
 import CartManager from '../CartManager.js'
+import ProductManager from '../ProductManager.js'
 
 const cm = new CartManager("./src/JSON/cart.json")
+const pm = new ProductManager("./src/JSON/products.json")
 
 const router = Router()
 
@@ -49,6 +51,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
     try {
         const cid = req.params.cid
         const pid = req.params.pid
+        await pm.isProductValid(pid)
         // TEMP - FROM CH REQUIREMENTS
         const QUANTITY_TO_ADD = 1
         // const quantityToAdd = req.body.quantityToAdd
