@@ -1,6 +1,8 @@
 // Express
 import express from 'express'
 import handlebars from 'express-handlebars'
+// Socket.io
+import { Server } from 'socket.io'
 // Routes
 import productRouter from './routes/products.router.js'
 import cartRouter from './routes/carts.router.js'
@@ -26,5 +28,8 @@ app.use('/', viewsRouter)
 
 // Initiate the server
 const PORT = 8080
-app.listen(PORT, () => console.log("Servidor en puerto 8080"))
+const httpServer = app.listen(PORT, () => console.log("Listening on port 8080"))
+
+// Socket
+const socketServer = new Server(httpServer)
 
