@@ -61,12 +61,18 @@ router.post("/", async (req, res) => {
         return res.status(400).send({ error: "Types not compatible: title (string), description (string), code (string), price (number), status (boolean), stock (number), category (string)" })
     }
 
-    let thumbnails = req.body.thumbnails ?? ["placeholder.jpg"]
+    let thumbnails = req.body.thumbnails ?? ["/img/placeholder.jpg"]
 
     const { title, description, code, price, status, stock, category } = req.body
 
     try {
         const pmResponse = await pm.addProduct(title, description, code, price, status, stock, category, thumbnails)
+
+        // Socket emit
+        const app = req.app
+        const socketServer = app.get('io')
+        socketServer.emit("product_update_add", req.body)
+        
         return res.status(200).send({ "info": pmResponse })
     }
     catch (error) {
@@ -123,7 +129,14 @@ router.delete("/:id", async (req, res) => {
     */
     try {
         const id = req.params.id
+        const product = await pm.getProductById(id)
         const pmResponse = await pm.deleteProduct(id)
+
+        // Socket emit
+        const app = req.app
+        const socketServer = app.get('io')
+        socketServer.emit("product_update_remove", product.code)
+
         return res.status(200).send({ "info": pmResponse })
     }
     catch (error) {

@@ -32,4 +32,5 @@ const httpServer = app.listen(PORT, () => console.log("Listening on port 8080"))
 
 // Socket
 const socketServer = new Server(httpServer)
+app.set('io',socketServer)
 
