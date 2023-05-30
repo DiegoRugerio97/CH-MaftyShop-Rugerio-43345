@@ -67,13 +67,13 @@ router.post("/", async (req, res) => {
 
     try {
         const pmResponse = await pm.addProduct(title, description, code, price, status, stock, category, thumbnails)
-
         // Socket emit
         const app = req.app
         const socketServer = app.get('io')
-        socketServer.emit("product_update_add", req.body)
+        socketServer.emit("product_update_add", { id: pmResponse.id, title: title, description: description, code: code, price: price, stock: stock, thumbnails: thumbnails })
+
         
-        return res.status(200).send({ "info": pmResponse })
+        return res.status(200).send({"statusMessage": pmResponse.statusMessage})
     }
     catch (error) {
         return res.status(400).send({ "error": error })
@@ -113,7 +113,7 @@ router.put("/:id", async (req, res) => {
     try {
         const id = req.params.id
         const pmResponse = await pm.updateProduct(id, req.body)
-        return res.status(200).send({ "info": pmResponse })
+        return res.status(200).send({"statusMessage": pmResponse.statusMessage})
     }
     catch (error) {
         return res.status(400).send({ "error": error })
@@ -129,15 +129,14 @@ router.delete("/:id", async (req, res) => {
     */
     try {
         const id = req.params.id
-        const product = await pm.getProductById(id)
         const pmResponse = await pm.deleteProduct(id)
 
         // Socket emit
         const app = req.app
         const socketServer = app.get('io')
-        socketServer.emit("product_update_remove", product.code)
+        socketServer.emit("product_update_remove", pmResponse.id)
 
-        return res.status(200).send({ "info": pmResponse })
+        return res.status(200).send({"statusMessage": pmResponse.statusMessage})
     }
     catch (error) {
         return res.status(400).send({ "error": error })

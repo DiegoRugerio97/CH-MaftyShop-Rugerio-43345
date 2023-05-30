@@ -16,10 +16,15 @@ class ProductManager {
     * @throws {Promise<Token>} In case number of arguments is incorrect, rejects the promise.
     */
 
-
     return this.#readProductsFromFile()
       .then(() => this.#registerProduct(title, description, code, price, status, stock, category, thumbnails))
-      .then(() => this.#writeProductsToFile())
+      .then((id) => {
+        this.#writeProductsToFile()
+        return id
+      })
+      .then((id) => {
+        return Promise.resolve({ id: id, statusMessage: `Product with id ${id} added` })
+      })
       .catch(e => { return Promise.reject(e) })
   }
 
@@ -57,7 +62,7 @@ class ProductManager {
       .then(() => { return this.products.filter(product => product.id != id) })
       .then(filteredProducts => this.products = filteredProducts)
       .then(() => this.#writeProductsToFile())
-      .then(() => { return Promise.resolve(`Product with id ${id} deleted`) })
+      .then((message) => { return Promise.resolve({ id: id, statusMessage: `Product with id ${id} deleted` }) })
       .catch(e => { return Promise.reject(e) })
   }
 
@@ -78,7 +83,7 @@ class ProductManager {
       })
       .then((productIndex) => this.products[productIndex] = { ...this.products[productIndex], ...obj })
       .then(() => this.#writeProductsToFile())
-      .then(() => { return Promise.resolve(`Item with id ${id} updated succesfully`) })
+      .then(() => { return Promise.resolve({ id: id, statusMessage: `Product with id ${id} updated succesfully` }) })
       .catch(e => { return Promise.reject(e) })
   }
 
@@ -119,6 +124,8 @@ class ProductManager {
       category: category,
       thumbnails: thumbnails,
     })
+
+    return id
   }
 
   // Promise methods
@@ -130,7 +137,6 @@ class ProductManager {
     * @throws {Promise<Token>} If something fails, promise is rejected
     */
     return fs.promises.writeFile(this.path, JSON.stringify(this.products), 'utf-8')
-      .then(() => { return Promise.resolve(`File was written with ${this.products.length} items.`) })
       .catch((e) => { return Promise.reject(`File couldn't be saved`) })
   }
 
