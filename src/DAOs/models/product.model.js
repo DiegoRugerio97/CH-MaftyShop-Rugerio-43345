@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
     },
     thumbnails: {
         type: Array,
-        default: ["/img/placeholder.png"]
+        default: ["/img/placeholder.jpg"]
     }
 })
 

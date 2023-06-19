@@ -21,7 +21,7 @@ class CartManager {
             throw `Cart ID ${id} is not a valid format`
         }
 
-        const query = cartModel.findById(id)
+        const query = cartModel.findById(id).lean()
         const cart = await query.exec()
 
         if (!cart) {

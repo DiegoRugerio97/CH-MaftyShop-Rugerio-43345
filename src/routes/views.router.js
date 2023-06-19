@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import CartManager from '../DAOs/classes/CartManager.js'
-import ProductManager from '../DAOs/classes/ProductManager.js'
+import ProductManager from '../DAOs/ProductManager.js'
 
-const pm = new ProductManager("./src/JSON/products.json")
+
+const pm = new ProductManager()
 
 const router = Router()
 
@@ -38,7 +38,7 @@ router.get('/realtimeproducts', async (req, res) => {
         res.status(200).render('realTimeProducts',{ products })
     }
     catch (error) {
-        res.status(404).send({ 'error': error })
+        res.status(404).send({ error })
     }
 })
 

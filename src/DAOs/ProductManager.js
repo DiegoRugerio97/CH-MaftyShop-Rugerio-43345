@@ -7,7 +7,7 @@ class ProductManager {
         /**
         * Reads from MongoDB and returns the query promise for all documents,optional limit
         */
-        let query = productModel.find()
+        let query = productModel.find().lean()
         if (limit) {
             query = productModel.find().limit(limit)
         }
@@ -22,7 +22,7 @@ class ProductManager {
             throw `ID ${id} is not a valid format`
         }
 
-        let query = productModel.findById(id)
+        let query = productModel.findById(id).lean()
         const product = await query.exec()
 
         if (!product) {

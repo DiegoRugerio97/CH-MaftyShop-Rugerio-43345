@@ -81,7 +81,7 @@ router.delete("/:id", async (req, res) => {
         // Socket emit
         const app = req.app
         const socketServer = app.get('io')
-        socketServer.emit("product_update_remove", response.__id)
+        socketServer.emit("product_update_remove", response._id)
 
         return res.status(200).send({ response })
     }
