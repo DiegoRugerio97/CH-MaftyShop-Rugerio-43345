@@ -9,7 +9,7 @@ class CartManager {
         /**
         * Creates new Cart doc in MongoDB 
         */
-        const response = await cartModel.create({})
+        const response = await cartModel.create({products: []})
         return response
     }
 
@@ -41,7 +41,7 @@ class CartManager {
             throw `Product ID ${productId} is not a valid format`
         }
 
-        const productQuery = productModel.findById(productId)
+        const productQuery = productModel.findById(productId).lean()
         const product = await productQuery.exec()
         if (!product) {
             throw `Product ${productId} does not exist`
@@ -82,7 +82,7 @@ class CartManager {
             throw `Cart ID ${id} is not a valid format`
         }
 
-        const query = cartModel.findByIdAndDelete(id)
+        const query = cartModel.findByIdAndDelete(id).lean()
         const response = await query.exec()
 
         if (!response) {
@@ -122,7 +122,7 @@ class CartManager {
         )
 
         await updateQuery.exec()
-        return await cartModel.findById(cartId).exec()
+        return await cartModel.findById(cartId).lean().exec()
 
     }
 }

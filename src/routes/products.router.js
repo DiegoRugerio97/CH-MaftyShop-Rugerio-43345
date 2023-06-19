@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
         // Socket emit
         const app = req.app
         const socketServer = app.get('io')
-        socketServer.emit("product_update_add", { id: response._id, title: response.title, description: response.description, code: response.code, price: response.price, stock: response.stock, thumbnails: response.thumbnails })
+        socketServer.emit("product_update_add", { id: response._id.toString(), title: response.title, description: response.description, code: response.code, price: response.price, stock: response.stock, thumbnails: response.thumbnails })
         return res.status(200).send({ response })
     }
     catch (error) {
@@ -77,11 +77,10 @@ router.delete("/:id", async (req, res) => {
     try {
         const id = req.params.id
         const response = await pm.deleteProduct(id)
-
         // Socket emit
         const app = req.app
         const socketServer = app.get('io')
-        socketServer.emit("product_update_remove", response._id)
+        socketServer.emit("product_update_remove", response._id.toString())
 
         return res.status(200).send({ response })
     }

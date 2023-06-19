@@ -1,7 +1,12 @@
 <div>
-    <h1>Home</h1>
-    <input id="chatbox">
-    <p id="messageLogs"></p>
+  <h1>Home</h1>
+  <input id="chatbox" />
+  <div id="messageLogs">
+    {{#each messages}}
+      <p>{{user}} : {{message}}</p>
+      <br />
+    {{/each}}
+  </div>
 </div>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>

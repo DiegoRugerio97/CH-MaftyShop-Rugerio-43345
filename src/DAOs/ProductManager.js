@@ -47,7 +47,7 @@ class ProductManager {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw `ID ${id} is not a valid format`
         }
-        let query = productModel.findByIdAndUpdate(id, doc, { returnDocument: "after" })
+        let query = productModel.findByIdAndUpdate(id, doc, { returnDocument: "after" }).lean()
         const response = await query.exec()
         if (!response) {
             throw `Product with ID ${id} does not exist`
@@ -62,7 +62,7 @@ class ProductManager {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw `ID ${id} is not a valid format`
         }
-        let query = productModel.findByIdAndDelete(id)
+        let query = productModel.findByIdAndDelete(id).lean()
         const response = await query.exec()
         if (!response) {
             throw `Product with ID ${id} does not exist`

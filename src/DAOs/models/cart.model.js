@@ -16,7 +16,6 @@ const productInCartSchema = new mongoose.Schema({
 const cartSchema = new mongoose.Schema({
     products: {
         type: [productInCartSchema],
-        required: true,
         default: []
     }
 })

@@ -1,4 +1,4 @@
-const socket = io()
+const socket = io();
 let user
 
 const chatbox = document.getElementById("chatbox")
@@ -19,7 +19,6 @@ Swal.fire({
         return { email: email }
     }
 }).then((result) => {
-    console.log(result.value.email)
     user = result.value.email;
     socket.emit("authenticatedUser", user);
 })
@@ -27,16 +26,14 @@ Swal.fire({
 chatbox.addEventListener("keyup", (evt) => {
     if (evt.key === "Enter") {
         socket.emit("message", { user: user, message: chatbox.value })
-        chatbox.value == ""
+        chatbox.value = ""
     }
 })
 
-socket.on("imprimir", (data) => {
-    let mensajes = ""
-    data.forEach((msj) => {
-        mensajes += `${msj.user} escribio: ${msj.message} <br/>`
-    })
-    messageLogs.innerHTML = mensajes
+socket.on("print", (data) => {
+    const newMessage = document.createElement("p")
+    newMessage.innerHTML = `${data.user} : ${data.message}`
+    messageLogs.appendChild(newMessage)
 })
 
 socket.on('newUserAlert', (data) => {
