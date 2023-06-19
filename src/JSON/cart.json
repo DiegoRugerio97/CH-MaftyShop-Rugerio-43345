@@ -1,1 +1,7 @@
-[{"id":"d787d3a5","products":[]},{"id":"e56ae3c7","products":[]},{"id":"6ea4512d","products":[]}]
+[
+  { "id": "d787d3a5", "products": [{ "product": "ecc9b06e", "quantity": 1 }] },
+  { "id": "e56ae3c7", "products": [] },
+  { "id": "6ea4512d", "products": [] },
+  { "id": "7fea66c7", "products": [] },
+  { "id": "d338cdd1", "products": [] }
+]
