@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
         // Socket emit
         const app = req.app
         const socketServer = app.get('io')
-        socketServer.emit("product_update_add", { id: response.id, title: title, description: description, code: code, price: price, stock: stock, thumbnails: thumbnails })
+        socketServer.emit("product_update_add", { id: response._id, title: response.title, description: response.description, code: response.code, price: response.price, stock: response.stock, thumbnails: response.thumbnails })
         return res.status(200).send({ response })
     }
     catch (error) {
