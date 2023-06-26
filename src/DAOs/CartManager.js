@@ -2,26 +2,33 @@ import { cartModel } from './models/cart.model.js'
 import { productModel } from './models/product.model.js'
 import mongoose from 'mongoose'
 
-
 class CartManager {
 
     async createNewCart() {
         /**
         * Creates new Cart doc in MongoDB 
         */
-        const response = await cartModel.create({products: []})
+        const response = await cartModel.create({})
         return response
     }
 
-    async getCartProductsById(id) {
+    async getAllCarts() {
         /**
-        * Returns the Products subdoc array from specific Cart doc from MongoDB
+        * Returns all Cart docs from MongoDB
+        */
+        const query = cartModel.find().lean();
+        return query.exec();
+    }
+
+    async getCartById(id) {
+        /**
+        * Returns the populated Products subdocs of Cart doc from MongoDB
         */
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw `Cart ID ${id} is not a valid format`
         }
 
-        const query = cartModel.findById(id).lean()
+        const query = cartModel.findById(id).populate("products._id").lean()
         const cart = await query.exec()
 
         if (!cart) {
@@ -41,59 +48,49 @@ class CartManager {
             throw `Product ID ${productId} is not a valid format`
         }
 
-        const productQuery = productModel.findById(productId).lean()
-        const product = await productQuery.exec()
+        const product = await productModel.findById(productId)
         if (!product) {
-            throw `Product ${productId} does not exist`
+            throw `Product with ID ${productId} does not exist`
         }
 
-        const productInCart = await cartModel.findOne({
-            $and: [{ _id: cartId }, { "products.product": productId }]
-        })
+        const cart = await cartModel.findById(cartId).exec()
+        if (!cart) {
+            throw `Cart with ID ${cartId} does not exist`
+        }
 
-        let updateQuery = cartModel.updateOne(
-            { _id: cartId, "products.product": productId },
-            { $inc: { "products.$.quantity": productQuantity } }
-        )
-
+        const productInCart = cart.products.id(productId)
         if (!productInCart) {
-            updateQuery = cartModel.updateOne(
-                { _id: cartId },
-                {
-                    $addToSet: {
-                        products: {
-                            product: productId,
-                            quantity: productQuantity
-                        }
-                    }
-                }
-            )
+            cart.products.addToSet({ _id: product._id, quantity: productQuantity })
         }
-
-        await updateQuery.exec()
-        return await this.getCartProductsById(cartId)
+        else {
+            productInCart.quantity += productQuantity
+        }
+        await cart.save()
+        return await cartModel.findById(cartId).exec()
     }
 
-    async deleteCart(id) {
+    async updateCart(cartId, productsArray) {
         /**
-        * Deletes Cart doc from MongoDB
+        * Updates/overwrites Products array in Cart doc from MongoDB
         */
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw `Cart ID ${id} is not a valid format`
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw `Cart ID ${cartId} is not a valid format`
         }
-
-        const query = cartModel.findByIdAndDelete(id).lean()
-        const response = await query.exec()
-
-        if (!response) {
+        if (!Array.isArray(productsArray)) {
+            throw `Incorrect body format on ${productsArray}`
+        }
+        const cart = await cartModel.findById(cartId).exec()
+        if (!cart) {
             throw `Cart with ID ${id} does not exist`
         }
-        return response
+        cart.products = productsArray
+        await cart.save()
+        return await cartModel.findById(cartId).exec()
     }
 
-    async deleteProductFromCart(cartId, productId) {
+    async updateQuantity(cartId, productId, productQuantity) {
         /**
-        * Deletes Product in subdoc array in Cart doc from MongoDB
+        * Updates Product subdoc quantity in Cart doc from MongoDB
         */
         if (!mongoose.Types.ObjectId.isValid(cartId)) {
             throw `Cart ID ${cartId} is not a valid format`
@@ -102,29 +99,76 @@ class CartManager {
             throw `Product ID ${productId} is not a valid format`
         }
 
-        const productInCart = await cartModel.findOne({
-            $and: [{ _id: cartId }, { "products.product": productId }]
-        })
-
-        if (!productInCart) {
-            throw `Product with ID ${productId} not in cart ${cartId}`
+        const product = await productModel.findById(productId)
+        if (!product) {
+            throw `Product with ID ${productId} does not exist`
         }
 
-        let updateQuery = cartModel.updateOne(
-            { _id: cartId, "products.product": productId },
-            {
-                $pull: {
-                    "products": {
-                        "product": productId
-                    }
-                }
-            }
-        )
+        const cart = await cartModel.findById(cartId).exec()
+        if (!cart) {
+            throw `Cart with ID ${cartId} does not exist`
+        }
 
-        await updateQuery.exec()
-        return await cartModel.findById(cartId).lean().exec()
-
+        const productInCart = cart.products.id(productId)
+        if (!productInCart) {
+            throw `Product with ID ${productId} does not exist in Cart with ID ${cartId}`
+        }
+        else {
+            productInCart.quantity = productQuantity
+        }
+        await cart.save()
+        return await cartModel.findById(cartId).exec()
     }
+
+    async deleteCart(cartId) {
+        /**
+        * Deletes Products subdocs in Cart doc from MongoDB
+        */
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw `Cart ID ${cartId} is not a valid format`
+        }
+
+        const cart = await cartModel.findById(cartId).exec()
+        if (!cart) {
+            throw `Cart with ID ${cartId} does not exist`
+        }
+
+        cart.products = []
+        await cart.save()
+        return await cartModel.findById(cartId).exec()
+    }
+
+    async deleteProductFromCart(cartId, productId) {
+        /**
+        * Deletes specified Product subdoc in Cart doc from MongoDB
+        */
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw `Cart ID ${cartId} is not a valid format`
+        }
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            throw `Product ID ${productId} is not a valid format`
+        }
+
+        const cart = await cartModel.findById(cartId).exec()
+        if (!cart) {
+            throw `Cart with ID ${cartId} does not exist`
+        }
+
+        const productInCart = cart.products.id(productId)
+        if (!productInCart) {
+            throw `Product with ID ${productId} does not exist in Cart with ID ${cartId}`
+        }
+        else {
+            productInCart.deleteOne()
+        }
+
+        await cart.save()
+        return await cartModel.findById(cartId).exec()
+    }
+
+
+
 }
 
 export default CartManager
+
