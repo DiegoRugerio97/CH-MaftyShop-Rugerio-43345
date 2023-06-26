@@ -3,15 +3,28 @@ import mongoose from 'mongoose'
 
 class ProductManager {
 
-    async getProducts(limit = null) {
+    async getProducts(limit = 10, page = 1, sort = null, queryField = null, queryVal = null) {
         /**
         * Reads from MongoDB and returns the query promise for all documents,optional limit
         */
-        let query = productModel.find().lean()
-        if (limit) {
-            query = productModel.find().limit(limit)
+        let query = {}
+        let options = {
+            limit: limit,
+            page: page
         }
-        return await query.exec()
+        if (sort) {
+            options.sort = { price: sort }
+        }
+        if (queryField && queryVal) {
+            query = { [queryField]: queryVal }
+        }
+        if (queryField == "stock" && queryVal) {
+            query = { [queryField]: { $gt: queryVal } }
+        }
+
+        // console.log(query,options)
+        let result = await productModel.paginate(query, options)
+        return result;
     }
 
     async getProductById(id) {
