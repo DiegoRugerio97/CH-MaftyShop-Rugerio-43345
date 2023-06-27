@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import ProductManager from '../DAOs/ProductManager.js'
-import { sanitizeFilter } from 'mongoose'
+import { sanitizeQueryParams, linkBuilder } from '../utils.js'
 
 const pm = new ProductManager()
 
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
         // Get relevant information from paginate response
         let { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = products
         // Create next and prev links
-        const { prevLink, nextLink } = linkBuilder(queryParameters, hasNextPage, hasPrevPage, page)
+        const { prevLink, nextLink } = linkBuilder("api/products",queryParameters, hasNextPage, hasPrevPage, page)
         // Create the response object
         const response = { status: "success", payload: docs, totalPages: totalPages, prevPage: prevPage, nextPage: nextPage, page: page, hasPrevPage: hasPrevPage, hasNextPage: hasNextPage, prevLink: prevLink, nextLink: nextLink }
         // Send the response
@@ -100,76 +100,5 @@ router.delete("/:id", async (req, res) => {
     }
 })
 
-const linkBuilder = (parameters, hasNextPage, hasPrevPage, page) => {
-    const ROOT_URL = `http://localhost:8080/api/products?limit=${parameters.limit}`
-    let finalURLString = ROOT_URL
-    if (parameters.sort) {
-        finalURLString += `&sort=${parameters.sort}`
-    }
-    if (parameters.queryField) {
-        finalURLString += `&queryField=${parameters.queryField}`
-    }
-    if (parameters.queryVal) {
-        finalURLString += `&queryField=${parameters.queryVal}`
-    }
-
-    const links = { prevLink: null, nextLink: null }
-    if (hasPrevPage) {
-        let prevPage = page - 1
-        let prevPageURL = finalURLString
-        prevPageURL += `&page=${prevPage}`
-        links.prevLink = prevPageURL
-    }
-    if (hasNextPage) {
-        let nextPage = page + 1
-        let nextPageURL = finalURLString
-        nextPageURL += `&page=${nextPage}`
-        links.nextLink = nextPageURL
-    }
-    return links
-}
-
-const sanitizeQueryParams = (parameters) => {
-
-    const queryParameters = {}
-    // limit
-    let limitIsValid = parameters.limit && !isNaN(parameters.limit)
-    if (limitIsValid) {
-        queryParameters.limit = parseInt(parameters.limit)
-    }
-    else {
-        const DEFAULT_LIMIT = 10
-        queryParameters.limit = DEFAULT_LIMIT
-    }
-    // page
-    let pageIsValid = parameters.page && !isNaN(parameters.page)
-    if (pageIsValid) {
-        queryParameters.pageNumber = parseInt(parameters.page)
-    }
-    else {
-        const DEFAULT_PAGE = 1
-        queryParameters.pageNumber = DEFAULT_PAGE
-    }
-    // sort
-    let sortIsValid = parameters.sort && (parameters.sort == "asc" || parameters.sort == "desc")
-    if (sortIsValid) {
-        queryParameters.sort = parameters.sort
-    }
-    else {
-        queryParameters.sort = null
-    }
-    // query
-    let queryIsValid = parameters.queryField && parameters.queryField != "" && parameters.queryVal && parameters.queryVal != ""
-    if (queryIsValid) {
-        queryParameters.queryField = parameters.queryField
-        queryParameters.queryVal = parameters.queryVal
-    }
-    else {
-        queryParameters.queryField = null
-        queryParameters.queryVal = null
-    }
-
-    return queryParameters
-}
 
 export default router;

@@ -1,0 +1,47 @@
+<div class="container">
+  <h1 class="mx-auto fs-1 text-center">Products</h1>
+  <div class="row mx-auto">
+    <form action="/products" method="get">
+      <select class="form-select mx-auto" name="sort">
+        <option value="null" selected>Order by Price</option>
+        <option value="asc">Most Expensive First</option>
+        <option value="desc">Least Expensive First</option>
+      </select>
+      <button type="submit" class="btn btn-dark mx-auto">Filter</button>
+    </form>
+    {{#each docs}}
+      <div id={{_id}} class="col-md-4 mb-3 d-flex align-items-stretch mx-auto">
+        <div class="card" style="width: 18rem;">
+          <img src={{thumbnails.[0]}} class="card-img-top" alt="Product image" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{title}}</h5>
+            <p class="card-text mb-4">{{description}}</p>
+            <p class="card-text mb-4">${{price}} MXN</p>
+            <button
+              type="submit"
+              class="btn btn-dark mt-auto align-self-start"
+              onclick="addToCart('{{_id}}')"
+            >Shop</button>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination mx-auto">
+      {{#if hasPrevPage}}
+        <li class="page-item"><a
+            class="page-link"
+            href={{prevLink}}
+          >Previous</a></li>
+      {{/if}}
+      {{#if hasNextPage}}
+        <li class="page-item"><a
+            class="page-link"
+            href={{nextLink}}
+          >Next</a></li>
+      {{/if}}
+    </ul>
+  </nav>
+</div>
+<script src="/js/products.js"></script>
