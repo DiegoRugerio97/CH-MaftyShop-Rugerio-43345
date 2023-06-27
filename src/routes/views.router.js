@@ -35,7 +35,7 @@ router.get('/products', async (req, res) => {
     try {
         const response = await pm.getProducts(limit, pageNumber, sort, queryField, queryVal)
         let { docs, page, hasPrevPage, hasNextPage, totalPages } = response
-        if (pageNumber > totalPages) {
+        if (pageNumber > totalPages || pageNumber < 0) {
             throw `Page ${pageNumber} doesn't exist`
         }
         const { prevLink, nextLink } = linkBuilder("products", queryParameters, hasNextPage, hasPrevPage, page)
