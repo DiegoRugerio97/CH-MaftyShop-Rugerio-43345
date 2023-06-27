@@ -7,14 +7,17 @@
         <option value="desc">Most Expensive First</option>
         <option value="asc">Least Expensive First</option>
       </select>
+      <select class="form-select mx-auto" name="queryField">
+        <option value="null" >Filter Field</option>
+        <option value="category" >Category</option>
+        <option value="stock" >Stock Status</option>
+      </select>
       <select class="form-select mx-auto" name="queryVal">
-        <option value="null" selected>Category</option>
+        <option value="null" selected>Filter Value</option>
         <option value="Figures">Figures</option>
         <option value="Manga">Manga</option>
         <option value="Gunpla">Gunpla</option>
-      </select>
-      <select class="form-select mx-auto" name="queryField" hidden>
-        <option value="category" selected></option>
+        <option value="0">In Stock</option>
       </select>
       <button type="submit" class="btn btn-dark mx-auto">Filter</button>
     </form>
