@@ -10,7 +10,8 @@ class ProductManager {
         let query = {}
         let options = {
             limit: limit,
-            page: page
+            page: page,
+            lean : true
         }
         if (sort) {
             options.sort = { price: sort }
@@ -22,7 +23,6 @@ class ProductManager {
             query = { [queryField]: { $gt: queryVal } }
         }
 
-        // console.log(query,options)
         let result = await productModel.paginate(query, options)
         return result;
     }
@@ -60,7 +60,7 @@ class ProductManager {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw `ID ${id} is not a valid format`
         }
-        let query = productModel.findByIdAndUpdate(id, doc, { returnDocument: "after" }).lean()
+        let query = productModel.findByIdAndUpdate(id, doc, { returnDocument: "after" })
         const response = await query.exec()
         if (!response) {
             throw `Product with ID ${id} does not exist`
@@ -75,7 +75,7 @@ class ProductManager {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw `ID ${id} is not a valid format`
         }
-        let query = productModel.findByIdAndDelete(id).lean()
+        let query = productModel.findByIdAndDelete(id)
         const response = await query.exec()
         if (!response) {
             throw `Product with ID ${id} does not exist`

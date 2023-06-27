@@ -12,7 +12,9 @@ router.get('/', async (req, res) => {
     * GET / Renders an HTML page using Handlebars with list of products
     */
     try {
-        const products = await pm.getProducts()
+        const LIMIT = 100
+        const response = await pm.getProducts(LIMIT)
+        const products = response.docs
         res.status(200).render('home', { products })
     }
     catch (error) {
@@ -27,7 +29,9 @@ router.get('/realtimeproducts', async (req, res) => {
     */
     
     try {
-        const products = await pm.getProducts()
+        const LIMIT = 100
+        const response = await pm.getProducts(LIMIT)
+        const products = response.docs
         res.status(200).render('realTimeProducts', { products })
     }
     catch (error) {
