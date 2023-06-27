@@ -1,9 +1,12 @@
 import { Router } from 'express'
 import ProductManager from '../DAOs/ProductManager.js'
 import MessageManager from '../DAOs/MessageManager.js'
+import CartManager from '../DAOs/CartManager.js'
 import { sanitizeQueryParams, linkBuilder } from '../utils.js'
+
 const pm = new ProductManager()
 const mm = new MessageManager()
+const cm = new CartManager()
 
 const router = Router()
 
@@ -32,7 +35,7 @@ router.get('/products', async (req, res) => {
     try {
         const response = await pm.getProducts(limit, pageNumber, sort, queryField, queryVal)
         let { docs, page, hasPrevPage, hasNextPage } = response
-        const { prevLink, nextLink } = linkBuilder("products",queryParameters, hasNextPage, hasPrevPage, page)
+        const { prevLink, nextLink } = linkBuilder("products", queryParameters, hasNextPage, hasPrevPage, page)
         res.status(200).render('products', { docs: docs, prevLink: prevLink, nextLink: nextLink, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage })
     }
     catch (error) {
@@ -70,8 +73,21 @@ router.get('/chat', async (req, res) => {
     catch (error) {
         res.status(404).send({ error })
     }
-
 })
 
+
+router.get('/carts/:cid', async (req, res) => {
+    /**
+    * GET /carts/:ciid Renders an HTML page using Handlebars with list of products in Cart
+    */
+    try {
+        const cid = req.params.cid
+        const cartProducts = await cm.getCartById(cid)
+        return res.status(200).render("cart", { cartProducts })
+    }
+    catch (error) {
+        return res.status(400).send({ error })
+    }
+})
 
 export default router;

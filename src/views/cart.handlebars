@@ -1,0 +1,17 @@
+<div class="container">
+  <h1 class="mx-auto fs-1 text-center">Cart {{cid}}</h1>
+  <div class="row mx-auto">
+    {{#each cartProducts}}
+      <div id={{_id._id}} class="col-md-4 mb-3 d-flex align-items-stretch mx-auto">
+        <div class="card" style="width: 18rem;">
+          <img src={{_id.thumbnails.[0]}} class="card-img-top" alt="Product image" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{_id.title}}</h5>
+            <p class="card-text mb-4">{{_id.description}}</p>
+            <p class="card-text mb-4">Quantity: {{quantity}}</p>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

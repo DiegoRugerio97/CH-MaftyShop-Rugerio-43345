@@ -4,8 +4,17 @@
     <form action="/products" method="get">
       <select class="form-select mx-auto" name="sort">
         <option value="null" selected>Order by Price</option>
-        <option value="asc">Most Expensive First</option>
-        <option value="desc">Least Expensive First</option>
+        <option value="desc">Most Expensive First</option>
+        <option value="asc">Least Expensive First</option>
+      </select>
+      <select class="form-select mx-auto" name="queryVal">
+        <option value="null" selected>Category</option>
+        <option value="Figures">Figures</option>
+        <option value="Manga">Manga</option>
+        <option value="Gunpla">Gunpla</option>
+      </select>
+      <select class="form-select mx-auto" name="queryField" hidden>
+        <option value="category" selected></option>
       </select>
       <button type="submit" class="btn btn-dark mx-auto">Filter</button>
     </form>
