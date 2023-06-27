@@ -20,19 +20,19 @@ class CartManager {
         return query.exec();
     }
 
-    async getCartById(id) {
+    async getCartById(cartId) {
         /**
         * Returns the populated Products subdocs of Cart doc from MongoDB
         */
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw `Cart ID ${id} is not a valid format`
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw `Cart ID ${cartId} is not a valid format`
         }
 
-        const query = cartModel.findById(id).populate("products._id").lean()
+        const query = cartModel.findById(cartId).populate("products._id").lean()
         const cart = await query.exec()
 
         if (!cart) {
-            throw `Cart with ID ${id} does not exist`
+            throw `Cart with ID ${cartId} does not exist`
         }
         return cart.products
     }
@@ -81,7 +81,7 @@ class CartManager {
         }
         const cart = await cartModel.findById(cartId).exec()
         if (!cart) {
-            throw `Cart with ID ${id} does not exist`
+            throw `Cart with ID ${cartId} does not exist`
         }
         cart.products = productsArray
         await cart.save()
