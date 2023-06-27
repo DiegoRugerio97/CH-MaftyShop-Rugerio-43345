@@ -16,7 +16,7 @@ class ProductManager {
         if (sort) {
             options.sort = { price: sort }
         }
-        if (queryField && queryVal) {
+        if (queryField && queryVal && queryField != "null" && queryVal != "null") {
             query = { [queryField]: queryVal }
         }
         if (queryField == "stock" && queryVal) {

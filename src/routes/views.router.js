@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
         res.status(200).render('home', { products })
     }
     catch (error) {
-        res.status(404).send({ 'error': error })
+        res.status(404).render('error', { error })
     }
 })
 
@@ -34,12 +34,15 @@ router.get('/products', async (req, res) => {
     const { limit, pageNumber, sort, queryField, queryVal } = queryParameters
     try {
         const response = await pm.getProducts(limit, pageNumber, sort, queryField, queryVal)
-        let { docs, page, hasPrevPage, hasNextPage } = response
+        let { docs, page, hasPrevPage, hasNextPage, totalPages } = response
+        if (pageNumber > totalPages) {
+            throw `Page ${pageNumber} doesn't exist`
+        }
         const { prevLink, nextLink } = linkBuilder("products", queryParameters, hasNextPage, hasPrevPage, page)
         res.status(200).render('products', { docs: docs, prevLink: prevLink, nextLink: nextLink, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage })
     }
     catch (error) {
-        res.status(404).send({ 'error': error })
+        res.status(404).render('error', { error })
     }
 })
 
@@ -56,7 +59,7 @@ router.get('/realtimeproducts', async (req, res) => {
         res.status(200).render('realTimeProducts', { products })
     }
     catch (error) {
-        res.status(404).send({ error })
+        res.status(404).render('error', { error })
     }
 })
 
@@ -71,7 +74,7 @@ router.get('/chat', async (req, res) => {
         res.status(200).render('chat', { messages })
     }
     catch (error) {
-        res.status(404).send({ error })
+        res.status(404).render('error', { error })
     }
 })
 
@@ -86,7 +89,7 @@ router.get('/carts/:cid', async (req, res) => {
         return res.status(200).render("cart", { cartProducts })
     }
     catch (error) {
-        return res.status(400).send({ error })
+        res.status(404).render('error', { error })
     }
 })
 
