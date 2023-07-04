@@ -14,22 +14,9 @@ router.get('/', async (req, res) => {
     /**
     * GET / Renders an HTML page using Handlebars with list of products
     */
-    try {
-        const LIMIT = 100
-        const response = await pm.getProducts(LIMIT)
-        const products = response.docs
-        res.status(200).render('home', { products })
+    if (!req.session.user) {
+        return res.redirect('/login')
     }
-    catch (error) {
-        res.status(404).render('error', { error })
-    }
-})
-
-
-router.get('/products', async (req, res) => {
-    /**
-    * GET / Renders an HTML page using Handlebars with list of products
-    */
     const queryParameters = sanitizeQueryParams(req.query)
     const { limit, pageNumber, sort, queryField, queryVal } = queryParameters
     try {
@@ -38,14 +25,13 @@ router.get('/products', async (req, res) => {
         if (pageNumber > totalPages) {
             throw `Page ${pageNumber} doesn't exist`
         }
-        const { prevLink, nextLink } = linkBuilder("products", queryParameters, hasNextPage, hasPrevPage, page)
-        res.status(200).render('products', { docs: docs, prevLink: prevLink, nextLink: nextLink, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage })
+        const { prevLink, nextLink } = linkBuilder("", queryParameters, hasNextPage, hasPrevPage, page)
+        res.status(200).render('products', { user: req.session.user, docs: docs, prevLink: prevLink, nextLink: nextLink, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage })
     }
     catch (error) {
         res.status(404).render('error', { error })
     }
 })
-
 
 router.get('/realtimeproducts', async (req, res) => {
     /**
@@ -63,7 +49,6 @@ router.get('/realtimeproducts', async (req, res) => {
     }
 })
 
-
 router.get('/chat', async (req, res) => {
     /**
     * GET /chat Renders an HTML page using Handlebars with chat, connects to websocket
@@ -78,7 +63,6 @@ router.get('/chat', async (req, res) => {
     }
 })
 
-
 router.get('/carts/:cid', async (req, res) => {
     /**
     * GET /carts/:ciid Renders an HTML page using Handlebars with list of products in Cart
@@ -92,5 +76,16 @@ router.get('/carts/:cid', async (req, res) => {
         res.status(404).render('error', { error })
     }
 })
+
+router.get('/register', (req, res) => {
+    return res.render('register')
+})
+
+router.get('/login', (req, res) => {
+    return res.render('login')
+})
+
+
+
 
 export default router;

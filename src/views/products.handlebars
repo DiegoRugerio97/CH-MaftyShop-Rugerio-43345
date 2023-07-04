@@ -1,5 +1,8 @@
 <div class="container">
-  <h1 class="mx-auto fs-1 text-center">Products</h1>
+  <h1 class="mx-auto fs-1 text-center">Bienvenido {{user.first_name}}!</h1>
+  <h4 class="mx-auto text-center">Email: {{user.email}}</h4>
+  <h4 class="mx-auto text-center">Role: {{user.role}}</h4>
+  <a class="btn btn-dark mt-auto align-self-start" href="/api/sessions/logout"><button>Logout</button></a>
   <div class="row mx-auto">
     <form action="/products" method="get">
       <select class="form-select mx-auto" name="sort">
@@ -8,9 +11,9 @@
         <option value="asc">Least Expensive First</option>
       </select>
       <select class="form-select mx-auto" name="queryField">
-        <option value="null" >Filter Field</option>
-        <option value="category" >Category</option>
-        <option value="stock" >Stock Status</option>
+        <option value="null">Filter Field</option>
+        <option value="category">Category</option>
+        <option value="stock">Stock Status</option>
       </select>
       <select class="form-select mx-auto" name="queryVal">
         <option value="null" selected>Filter Value</option>
