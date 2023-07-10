@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { userModel } from "../DAOs/models/users.model.js"
+import { createHash, isPasswordValid } from "../utils.js";
 
 const router = Router();
 
@@ -12,27 +13,32 @@ router.post("/register", async (req, res) => {
       .status(400)
       .send({ status: "error", message: "User already registered!" })
 
+  const hashedPassword = createHash(password)
   await userModel.create({
     first_name,
     last_name,
     email,
     age,
-    password,
+    password: hashedPassword
   })
   res.status(200).send({ status: "success", message: "User registered succesfully!" })
 })
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body
-  let user = await userModel.findOne({ email: email, password: password })
+  let user = await userModel.findOne({ email: email }).lean().exec()
+  let validCredentials = isPasswordValid(user,password)
   if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
     user = {
       first_name: "Administrator",
       email: "adminCoder@coder.com",
       role: "Administrator"
     }
+    validCredentials = true
   }
-  if (!user) return res.status(401).send()
+
+  if (!validCredentials) return res.status(401).send()
+
   req.session.user = {
     first_name: user.first_name,
     last_name: user.last_name,

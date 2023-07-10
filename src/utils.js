@@ -1,11 +1,19 @@
-import {fileURLToPath} from 'url';
-import { dirname } from 'path';
+import {fileURLToPath} from 'url'
+import { dirname } from 'path'
+import bcrypt from 'bcrypt'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Password hashing
+export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 
-export default __dirname;
+export const isPasswordValid = (user, password) => bcrypt.compareSync(password, user.password)
 
+// Absolute pathing for project
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+export default __dirname
+
+// Util functions for views and routes
 export const linkBuilder = (URL, parameters, hasNextPage, hasPrevPage, page) => {
     const ROOT_URL = `http://localhost:8080/${URL}?limit=${parameters.limit}`
     let finalURLString = ROOT_URL
