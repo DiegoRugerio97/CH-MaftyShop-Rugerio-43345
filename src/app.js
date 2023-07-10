@@ -16,6 +16,10 @@ import MessageManager from './DAOs/MessageManager.js'
 // Session
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+// Passport
+import passport from 'passport'
+import initializePassport from './config/passport.config.js'
+
 
 // Initialize express
 const app = express()
@@ -38,13 +42,16 @@ app.use(
         store: new MongoStore({
             mongoUrl: mongoURL,
             dbName: db,
-            autoRemove:'native'
+            autoRemove: 'native'
         }),
         secret: "mongoSecret",
         resave: false,
         saveUninitialized: true,
     })
-);
+)
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 // Routes
 app.use('/api/sessions', sessionRouter)
 app.use('/api/products', productRouter)

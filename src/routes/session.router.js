@@ -1,44 +1,21 @@
 import { Router } from "express"
-import { userModel } from "../DAOs/models/users.model.js"
-import { createHash, isPasswordValid } from "../utils.js";
+import passport from "passport"
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body
-  const exist = await userModel.findOne({ email })
-
-  if (exist)
-    return res
-      .status(400)
-      .send({ status: "error", message: "User already registered!" })
-
-  const hashedPassword = createHash(password)
-  await userModel.create({
-    first_name,
-    last_name,
-    email,
-    age,
-    password: hashedPassword
-  })
+router.post("/register", passport.authenticate('register', { failureRedirect: '/api/sessions/failRegister' }), async (req, res) => {
   res.status(200).send({ status: "success", message: "User registered succesfully!" })
 })
 
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body
-  let user = await userModel.findOne({ email: email }).lean().exec()
-  let validCredentials = isPasswordValid(user,password)
-  if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
-    user = {
-      first_name: "Administrator",
-      email: "adminCoder@coder.com",
-      role: "Administrator"
-    }
-    validCredentials = true
-  }
+router.get("/failRegister", async (req, res) => {
+  res.status(409).send({ status: "error", message:"User already exists!" })
+})
 
-  if (!validCredentials) return res.status(401).send()
+router.post("/login", passport.authenticate('login', { failureRedirect: '/api/sessions/failLogin' }), async (req, res) => {
+  if (!req.user) return res.status(401).send()
 
+  let user = req.user
+  
   req.session.user = {
     first_name: user.first_name,
     last_name: user.last_name,
@@ -51,11 +28,14 @@ router.post("/login", async (req, res) => {
       console.log(err)
     }
     else {
-      res.status(200).send({ status: "success", message: req.session.user })
+      res.status(200).send({ status: "success", payload: user })
     }
   })
-
 });
+
+router.get("/failLogin", async (req, res) => {
+  res.status(401).send()
+})
 
 router.get("/logout", async (req, res) => {
   req.session.destroy(err => {

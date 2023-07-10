@@ -13,6 +13,7 @@ form.addEventListener('submit', e => {
         },
         credentials: "include"
     }).then(result => result.json()).then(json => {
+        console.log(json)
         alert(json.message)
         form.reset()
     });
