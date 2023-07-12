@@ -1,7 +1,8 @@
-import passport from "passport"
+import passport from 'passport'
 import local from 'passport-local'
-import { userModel } from "../DAOs/models/users.model.js"
-import { createHash, isPasswordValid } from "../utils.js"
+import { userModel } from '../DAOs/models/users.model.js'
+import { createHash, isPasswordValid } from '../utils.js'
+import GitHubStrategy from 'passport-github2'
 
 const LocalStrategy = local.Strategy
 const initializePassport = () => {
@@ -26,7 +27,7 @@ const initializePassport = () => {
                 return done(null, result)
             }
             catch (error) {
-                return done("Error creating user " + error)
+                return done('Error creating user ' + error)
             }
         }
     ))
@@ -47,6 +48,35 @@ const initializePassport = () => {
             }
         }
     ))
+
+    passport.use('github', new GitHubStrategy(
+        {
+            
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                let user = await userModel.findOne({ email: profile._json.email });
+                if (!user) {
+                    let newUser = {
+                        first_name: profile.username,
+                        last_name: '',
+                        email: profile.profileUrl,
+                        age: 100,
+                        password: '',
+                    };
+                    let result = await userModel.create(newUser);
+                    done(null, result);
+                }
+                else {
+                    done(null, user);
+                }
+            }
+            catch (error) {
+                done(error)
+            }
+        }
+    )
+    );
 
     passport.serializeUser((user, done) => {
         done(null, user._id)
