@@ -3,6 +3,7 @@ import ProductManager from '../DAOs/ProductManager.js'
 import MessageManager from '../DAOs/MessageManager.js'
 import CartManager from '../DAOs/CartManager.js'
 import { sanitizeQueryParams, linkBuilder } from '../utils.js'
+import passport from 'passport'
 
 const pm = new ProductManager()
 const mm = new MessageManager()
@@ -10,13 +11,11 @@ const cm = new CartManager()
 
 const router = Router()
 
-router.get('/', async (req, res) => {
+router.get('/', passport.authenticate('current', { session: false, failureRedirect:'/login' }), async (req, res) => {
     /**
     * GET / Renders an HTML page using Handlebars with list of products
     */
-    if (!req.session.user) {
-        return res.redirect('/login')
-    }
+
     const queryParameters = sanitizeQueryParams(req.query)
     const { limit, pageNumber, sort, queryField, queryVal } = queryParameters
     try {
@@ -26,7 +25,7 @@ router.get('/', async (req, res) => {
             throw `Page ${pageNumber} doesn't exist`
         }
         const { prevLink, nextLink } = linkBuilder("", queryParameters, hasNextPage, hasPrevPage, page)
-        res.status(200).render('products', { user: req.session.user, docs: docs, prevLink: prevLink, nextLink: nextLink, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage })
+        res.status(200).render('products', { user: req.user.user, docs: docs, prevLink: prevLink, nextLink: nextLink, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage })
     }
     catch (error) {
         res.status(404).render('error', { error })

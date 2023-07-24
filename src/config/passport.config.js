@@ -5,7 +5,8 @@ import { createHash, isPasswordValid } from '../utils.js'
 import GitHubStrategy from 'passport-github2'
 
 const LocalStrategy = local.Strategy
-const initializePassport = () => {
+
+export const initializePassportLocal = () => {
 
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
@@ -91,4 +92,3 @@ const initializePassport = () => {
 
 }
 
-export default initializePassport

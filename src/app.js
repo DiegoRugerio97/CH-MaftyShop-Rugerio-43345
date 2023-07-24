@@ -13,12 +13,11 @@ import mongoose from 'mongoose'
 // Misc
 import __dirname from './utils.js'
 import MessageManager from './DAOs/MessageManager.js'
-// Session
-import session from 'express-session'
-import MongoStore from 'connect-mongo'
 // Passport
 import passport from 'passport'
-import initializePassport from './config/passport.config.js'
+import { initializePassportJWT } from './config/jwt.passport.js'
+import { initializePassportLocal } from './config/passport.config.js'
+import cookieParser from 'cookie-parser'
 
 
 // Initialize express
@@ -36,22 +35,15 @@ mongoose.connect(mongoURL, { dbName: db })
 //Config
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-// Sessions
-app.use(
-    session({
-        store: new MongoStore({
-            mongoUrl: mongoURL,
-            dbName: db,
-            autoRemove: 'native'
-        }),
-        secret: "mongoSecret",
-        resave: false,
-        saveUninitialized: true,
-    })
-)
-initializePassport()
+
+// Sessions and Passport
+
+app.use(cookieParser())
+initializePassportJWT()
+initializePassportLocal()
 app.use(passport.initialize())
-app.use(passport.session())
+
+
 // Routes
 app.use('/api/sessions', sessionRouter)
 app.use('/api/products', productRouter)
