@@ -1,13 +1,14 @@
 import passport from 'passport'
 import local from 'passport-local'
 import { userModel } from '../DAOs/models/users.model.js'
+import { cartModel } from '../DAOs/models/cart.model.js'
 import { createHash, isPasswordValid } from '../utils.js'
 import GitHubStrategy from 'passport-github2'
 
 const LocalStrategy = local.Strategy
 
 export const initializePassportLocal = () => {
-
+    // Register
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body
@@ -18,12 +19,16 @@ export const initializePassportLocal = () => {
                     return done(null, false)
 
                 const hashedPassword = createHash(password)
+
+                const response = await cartModel.create({})
+
                 let result = await userModel.create({
                     first_name,
                     last_name,
                     email,
                     age,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    cart: response._id
                 })
                 return done(null, result)
             }
@@ -32,7 +37,7 @@ export const initializePassportLocal = () => {
             }
         }
     ))
-
+    // Login
     passport.use('login', new LocalStrategy(
         { usernameField: 'email' }, async (username, password, done) => {
             try {
@@ -49,23 +54,25 @@ export const initializePassportLocal = () => {
             }
         }
     ))
-
+    // Github
     passport.use('github', new GitHubStrategy(
         {
             clientID: 'XXXXXXXXXX',
-            clientSecret: 'XXXXXXXXXXXXXXX',
+            clientSecret: 'XXXXXXXXX',
             callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                let user = await userModel.findOne({ email: profile._json.email });
+                let user = await userModel.findOne({ email: profile.profileUrl }).exec()
                 if (!user) {
+                    const response = await cartModel.create({})
                     let newUser = {
                         first_name: profile.username,
                         last_name: '',
                         email: profile.profileUrl,
-                        age: 100,
+                        age: 18,
                         password: '',
+                        cart: response._id
                     };
                     let result = await userModel.create(newUser);
                     done(null, result);
@@ -81,6 +88,7 @@ export const initializePassportLocal = () => {
     )
     );
 
+    // Serialization
     passport.serializeUser((user, done) => {
         done(null, user._id)
     })
