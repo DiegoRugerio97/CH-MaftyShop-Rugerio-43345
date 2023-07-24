@@ -1,10 +1,14 @@
 import { Router } from 'express'
+// Managers
 import ProductManager from '../DAOs/ProductManager.js'
 import MessageManager from '../DAOs/MessageManager.js'
 import CartManager from '../DAOs/CartManager.js'
+// Utils
 import { sanitizeQueryParams, linkBuilder } from '../utils.js'
+// Passport
 import passport from 'passport'
 
+// Instances of managers
 const pm = new ProductManager()
 const mm = new MessageManager()
 const cm = new CartManager()

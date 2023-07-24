@@ -1,9 +1,12 @@
+// Passport imports
 import passport from 'passport'
 import local from 'passport-local'
+import GitHubStrategy from 'passport-github2'
+// Models
 import { userModel } from '../DAOs/models/users.model.js'
 import { cartModel } from '../DAOs/models/cart.model.js'
+// Utils
 import { createHash, isPasswordValid } from '../utils.js'
-import GitHubStrategy from 'passport-github2'
 
 const LocalStrategy = local.Strategy
 
