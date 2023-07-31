@@ -1,3 +1,5 @@
+// ENV
+import config from './config.js'
 // Passport imports
 import passport from 'passport'
 import local from 'passport-local'
@@ -60,8 +62,8 @@ export const initializePassportLocal = () => {
     // Github
     passport.use('github', new GitHubStrategy(
         {
-            clientID: 'XXXXXXXXXX',
-            clientSecret: 'XXXXXXXXX',
+            clientID: config.clientID,
+            clientSecret: config.clientID,
             callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
         },
         async (accessToken, refreshToken, profile, done) => {

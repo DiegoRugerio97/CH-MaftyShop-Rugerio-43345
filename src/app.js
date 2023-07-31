@@ -1,3 +1,5 @@
+// ENV
+import config from './config/config.js'
 // Express
 import express from 'express'
 import handlebars from 'express-handlebars'
@@ -19,7 +21,6 @@ import { initializePassportJWT } from './config/jwt.passport.js'
 import { initializePassportLocal } from './config/passport.config.js'
 import cookieParser from 'cookie-parser'
 
-
 // Initialize express
 const app = express()
 // Handlebars
@@ -29,7 +30,7 @@ app.set('view engine', 'handlebars')
 // Public resources
 app.use(express.static(__dirname + '/public'))
 // Mongo
-const mongoURL = "mongodb+srv://diegorugerioc97:qWc3YfaglRahEPsz@mafty-shop.qmwjsfz.mongodb.net/?retryWrites=true&w=majority"
+const mongoURL = config.mongoURL
 const db = "ecommerce"
 mongoose.connect(mongoURL, { dbName: db })
 //Config
@@ -51,7 +52,7 @@ app.use('/api/carts', cartRouter)
 app.use('/', viewsRouter)
 
 // Initiate the server
-const PORT = 8080
+const PORT = config.port
 const httpServer = app.listen(PORT, () => console.log("Listening on port 8080"))
 
 // Socket
