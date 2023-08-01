@@ -1,8 +1,8 @@
 import { Router } from 'express'
 // Managers
-import ProductManager from '../DAOs/ProductManager.js'
-import MessageManager from '../DAOs/MessageManager.js'
-import CartManager from '../DAOs/CartManager.js'
+import ProductManager from '../dao/mongoManager/ProductManager.js'
+import MessageManager from '../dao/mongoManager/MessageManager.js'
+import CartManager from '../dao/mongoManager/CartManager.js'
 // Utils
 import { sanitizeQueryParams, linkBuilder } from '../utils.js'
 // Passport

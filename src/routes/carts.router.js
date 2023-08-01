@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import CartManager from '../DAOs/CartManager.js'
+import CartManager from '../dao/mongoManager/CartManager.js'
 
 const cm = new CartManager()
 

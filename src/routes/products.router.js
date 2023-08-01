@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import ProductManager from '../DAOs/ProductManager.js'
+import ProductManager from '../dao/mongoManager/ProductManager.js'
 import { sanitizeQueryParams, linkBuilder } from '../utils.js'
 
 const pm = new ProductManager()

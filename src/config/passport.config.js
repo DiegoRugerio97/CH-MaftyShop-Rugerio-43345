@@ -5,8 +5,8 @@ import passport from 'passport'
 import local from 'passport-local'
 import GitHubStrategy from 'passport-github2'
 // Models
-import { userModel } from '../DAOs/models/users.model.js'
-import { cartModel } from '../DAOs/models/cart.model.js'
+import { userModel } from '../dao/model/users.model.js'
+import { cartModel } from '../dao/model/cart.model.js'
 // Utils
 import { createHash, isPasswordValid } from '../utils.js'
 
@@ -63,7 +63,7 @@ export const initializePassportLocal = () => {
     passport.use('github', new GitHubStrategy(
         {
             clientID: config.clientID,
-            clientSecret: config.clientID,
+            clientSecret: config.clientSecret,
             callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
         },
         async (accessToken, refreshToken, profile, done) => {

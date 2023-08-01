@@ -14,7 +14,7 @@ import sessionRouter from './routes/session.router.js'
 import mongoose from 'mongoose'
 // Misc
 import __dirname from './utils.js'
-import MessageManager from './DAOs/MessageManager.js'
+import MessageManager from './dao/mongoManager/MessageManager.js'
 // Passport
 import passport from 'passport'
 import { initializePassportJWT } from './config/jwt.passport.js'
